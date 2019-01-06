@@ -168,6 +168,11 @@ func TestMultiSig(t *testing.T) {
 		},
 	)
 
+	// verify is valid multi sig address
+	if !splashecdsa.IsMultiSigAddress(addr) {
+		t.Error("multi sig address failed to pass IsMultiSigAddress")
+	}
+
 	// verify address is valid multi sig address
 	if !splashecdsa.IsAddressValid(addr) {
 		t.Error("multi sig address failed to pass isAddressValid")
