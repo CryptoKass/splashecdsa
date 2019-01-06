@@ -29,10 +29,10 @@ import (
 	"math/big"
 )
 
-// GenerateSplashKeys is a wrapper for ecdsa.GenerateKey that returns
+// GenerateKeys is a wrapper for ecdsa.GenerateKey that returns
 // splashkeys.PrivateKey instead ok *ecdsa.PrivateKey, this method will
 // return an error key generation failed.
-func GenerateSplashKeys(curve elliptic.Curve) (PrivateKey, error) {
+func GenerateKeys(curve elliptic.Curve) (PrivateKey, error) {
 	k, err := ecdsa.GenerateKey(curve, rand.Reader)
 	return PrivateKey(*k), err
 }

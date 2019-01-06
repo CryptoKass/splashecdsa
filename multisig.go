@@ -31,7 +31,7 @@ import (
 
 // GenerateMultiSigKey - Create a new Random multiSigKey
 func GenerateMultiSigKey(curve elliptic.Curve, order, partners uint8) (*MultiSigKey, error) {
-	priv, err := GenerateSplashKeys(curve)
+	priv, err := GenerateKeys(curve)
 	multiKey := MultiSigKey{
 		PrivateKey: priv,
 		Order:      order,
