@@ -36,28 +36,6 @@ type SplashSignature struct {
 	V, O uint8 // V is a reconstruction flag and O a multi sig order
 }
 
-// GetY will calculate the two possible Y values for a given X value on the
-// Curve.
-func GetY(x *big.Int, curve *elliptic.CurveParams) (*big.Int, *big.Int) {
-	x3 := new(big.Int).Mul(x, x)
-	x3.Mul(x3, x)
-
-	threeX := new(big.Int).Lsh(x, 1)
-	threeX.Add(threeX, x)
-
-	x3.Sub(x3, threeX)
-	x3.Add(x3, curve.B)
-	x3.Mod(x3, curve.P)
-
-	y1 := new(big.Int).ModSqrt(x3, curve.P)
-
-	y2 := new(big.Int).Sub(curve.P, y1)
-	y2.Mod(y2, curve.P)
-
-	//return x3.ModSqrt(x3, curve.P), x3.Sub(curve.P, x3).Mod(x3, curve.P)
-	return y1, y2
-}
-
 // ReconstructPublicKey reconstructs a public from a signature
 // using the message hash and a given Curve. Follows the
 // forumula pub = r^-1(sR−zG)`
