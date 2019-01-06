@@ -30,9 +30,9 @@ import (
 )
 
 // GenerateMultiSigKey - Create a new Random multiSigKey
-func GenerateMultiSigKey(curve elliptic.Curve, order, partners uint8) (*SplashMultiSigKey, error) {
+func GenerateMultiSigKey(curve elliptic.Curve, order, partners uint8) (*MultiSigKey, error) {
 	priv, err := GenerateSplashKeys(curve)
-	multiKey := SplashMultiSigKey{
+	multiKey := MultiSigKey{
 		PrivateKey: priv,
 		Order:      order,
 		Partners:   partners,
@@ -40,11 +40,11 @@ func GenerateMultiSigKey(curve elliptic.Curve, order, partners uint8) (*SplashMu
 	return &multiKey, err
 }
 
-// SplashMultiSigKey Is a private key for an multi-signature
-// ecdsa address. wraps SplashPrivateKey with some extra MultiSignature
+// MultiSigKey Is a private key for an multi-signature
+// ecdsa address. wraps PrivateKey with some extra MultiSignature
 // parameters and values.
-type SplashMultiSigKey struct {
-	PrivateKey SplashPrivateKey
+type MultiSigKey struct {
+	PrivateKey PrivateKey
 	Order      uint8
 	Partners   uint8
 }
@@ -54,7 +54,7 @@ type SplashMultiSigKey struct {
 //
 // The message should be less than 32 bytes long, for cases where
 // the message is longer, hash the message and sign the result.
-func (multi *SplashMultiSigKey) Sign(data []byte) (SplashSignature, error) {
+func (multi *MultiSigKey) Sign(data []byte) (SplashSignature, error) {
 	sig, err := multi.PrivateKey.Sign(data)
 	sig.O = multi.Order
 	return sig, err
@@ -62,7 +62,7 @@ func (multi *SplashMultiSigKey) Sign(data []byte) (SplashSignature, error) {
 
 // VerifyMutliSig verify mulitiple signstures to a single multi signature address
 func VerifyMutliSig(sigs []SplashSignature, data []byte, addr []byte, C elliptic.Curve) bool {
-	partners := make([]SplashPublicKey, len(sigs))
+	partners := make([]PublicKey, len(sigs))
 
 	for _, sig := range sigs {
 		pub := sig.ReconstructPublicKey(data, C)
@@ -76,8 +76,8 @@ func VerifyMutliSig(sigs []SplashSignature, data []byte, addr []byte, C elliptic
 }
 
 // GenerateMultiSigAddress generates a merkle tree for an OrderedS List
-// of SplashPublicKeys.
-func GenerateMultiSigAddress(keys []SplashPublicKey) []byte {
+// of PublicKeys.
+func GenerateMultiSigAddress(keys []PublicKey) []byte {
 	keySet := make([][]byte, 0)
 	for _, pub := range keys {
 		keySet = append(keySet, pub.CompressedBytes())

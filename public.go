@@ -30,14 +30,14 @@ import (
 	"github.com/CryptoKass/splashecdsa/ecmath"
 )
 
-// SplashPublicKey is a wrapper for ecdsa.PublicKey which adds
+// PublicKey is a wrapper for ecdsa.PublicKey which adds
 // some useful methods like ToBytes(), FromBytes() and QuickCheck()
-type SplashPublicKey ecdsa.PublicKey
+type PublicKey ecdsa.PublicKey
 
 // Bytes concatonates the Public keys x and y values
 // and returns the resulting byte array. For a smaller
 // byte array see @CompressedBytes.
-func (pub *SplashPublicKey) Bytes() (buf []byte) {
+func (pub *PublicKey) Bytes() (buf []byte) {
 	x := pub.X.Bytes()
 	y := pub.Y.Bytes()
 	buf = append(x, y...)
@@ -51,7 +51,7 @@ func (pub *SplashPublicKey) Bytes() (buf []byte) {
 // CompressedBytes are typically of length (n/2)+1 where n
 // is the length of normal Bytes(). It is more expensive to
 // Generate compress/reconstruct from CompressedBytes.
-func (pub *SplashPublicKey) CompressedBytes() (buf []byte) {
+func (pub *PublicKey) CompressedBytes() (buf []byte) {
 	// get the two possible y values
 	_, y1 := ecmath.GetY(pub.X, pub.Curve.Params())
 
@@ -71,7 +71,7 @@ func (pub *SplashPublicKey) CompressedBytes() (buf []byte) {
 
 // SetBytes decodes the buf and stores the values in the
 // pub X and Y
-func (pub *SplashPublicKey) SetBytes(buf []byte) {
+func (pub *PublicKey) SetBytes(buf []byte) {
 	bigX := new(big.Int)
 	bigY := new(big.Int)
 	bigX.SetBytes(buf[:32])
@@ -85,7 +85,7 @@ func (pub *SplashPublicKey) SetBytes(buf []byte) {
 
 // QuickCheck quickly checks that the public key is
 // in accordance with splashs ecdsa curve
-func (pub *SplashPublicKey) QuickCheck(curve elliptic.Curve) bool {
+func (pub *PublicKey) QuickCheck(curve elliptic.Curve) bool {
 	if pub.Curve != curve {
 		return false
 	}
@@ -96,8 +96,8 @@ func (pub *SplashPublicKey) QuickCheck(curve elliptic.Curve) bool {
 }
 
 // Verify verifies a SplashSignature of the hash belongs to this
-// SplashPublicKey
-func (pub *SplashPublicKey) Verify(hash []byte, sig SplashSignature) bool {
+// PublicKey
+func (pub *PublicKey) Verify(hash []byte, sig SplashSignature) bool {
 	ecPub := ecdsa.PublicKey(*pub)
 	return ecdsa.Verify(&ecPub, hash, sig.R, sig.S)
 }

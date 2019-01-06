@@ -61,7 +61,7 @@ func GetY(x *big.Int, curve *elliptic.CurveParams) (*big.Int, *big.Int) {
 // ReconstructPublicKey reconstructs a public from a signature
 // using the message hash and a given Curve. Follows the
 // forumula pub = r^-1(sR−zG)`
-func (sig *SplashSignature) ReconstructPublicKey(msgHash []byte, C elliptic.Curve) (pub SplashPublicKey) {
+func (sig *SplashSignature) ReconstructPublicKey(msgHash []byte, C elliptic.Curve) (pub PublicKey) {
 
 	// get the curve parameters
 	curve := C.Params()
@@ -92,7 +92,7 @@ func (sig *SplashSignature) ReconstructPublicKey(msgHash []byte, C elliptic.Curv
 	RMod := new(big.Int).ModInverse(sig.R, curve.N)
 	x, y := curve.ScalarMult(XX, YY, RMod.Bytes())
 
-	// wrap the values in SplashPublicKey
+	// wrap the values in PublicKey
 	pub.X, pub.Y = x, y
 	pub.Curve = C
 

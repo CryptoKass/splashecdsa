@@ -30,41 +30,41 @@ import (
 )
 
 // GenerateSplashKeys is a wrapper for ecdsa.GenerateKey that returns
-// splashkeys.splashPrivateKey instead ok *ecdsa.PrivateKey, this method will
+// splashkeys.PrivateKey instead ok *ecdsa.PrivateKey, this method will
 // return an error key generation failed.
-func GenerateSplashKeys(curve elliptic.Curve) (SplashPrivateKey, error) {
+func GenerateSplashKeys(curve elliptic.Curve) (PrivateKey, error) {
 	k, err := ecdsa.GenerateKey(curve, rand.Reader)
-	return SplashPrivateKey(*k), err
+	return PrivateKey(*k), err
 }
 
-// SplashPrivateKey is a wrapper for ecdsa.PrivateKey which adds
+// PrivateKey is a wrapper for ecdsa.PrivateKey which adds
 // Some useful methogs like ToBytes(), FromBytes(), GetPublicKey()
-type SplashPrivateKey ecdsa.PrivateKey
+type PrivateKey ecdsa.PrivateKey
 
 // Bytes returns the Private Key's D values
 // and returns the byte array
-func (priv *SplashPrivateKey) Bytes() (d []byte) {
+func (priv *PrivateKey) Bytes() (d []byte) {
 	d = priv.D.Bytes()
 	return
 }
 
 // SetBytes reconstructs the private key from D bytes
-func (priv *SplashPrivateKey) SetBytes(d []byte) {
+func (priv *PrivateKey) SetBytes(d []byte) {
 	bigD := new(big.Int)
 	bigD.SetBytes(d)
 	priv.D = bigD
 	priv.Curve = elliptic.P256()
 }
 
-// GetPublicKey returns the associated splashPublicKey for this privatekey,
+// GetPublicKey returns the associated PublicKey for this privatekey,
 // If the key is missing then one is generated. This is considered the safe way
 // to get the public key
-func (priv *SplashPrivateKey) GetPublicKey() SplashPublicKey {
+func (priv *PrivateKey) GetPublicKey() PublicKey {
 	if priv.PublicKey.X == nil {
 		priv.PublicKey.Curve = elliptic.P256()
 		priv.PublicKey.X, priv.PublicKey.Y = priv.PublicKey.Curve.ScalarBaseMult(priv.D.Bytes())
 	}
-	return SplashPublicKey(priv.PublicKey)
+	return PublicKey(priv.PublicKey)
 }
 
 // Sign - a wrapper for `ecdsa.Sign` that will sign some bytes
@@ -72,7 +72,7 @@ func (priv *SplashPrivateKey) GetPublicKey() SplashPublicKey {
 //
 // The message should be less than 32 bytes long, for cases where
 // the message is longer, hash the message and sign the result.
-func (priv *SplashPrivateKey) Sign(msg []byte) (sig SplashSignature, err error) {
+func (priv *PrivateKey) Sign(msg []byte) (sig SplashSignature, err error) {
 	ecPriv := ecdsa.PrivateKey(*priv)
 	sig = SplashSignature{}
 	sig.R, sig.S, err = ecdsa.Sign(rand.Reader, &ecPriv, msg)

@@ -1,10 +1,32 @@
+// MIT License
+
+// Copyright (c) 2019 Kassius Barker <kasscrypto@gmail.com>
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 package splashecdsa
 
 import (
 	"crypto/sha256"
 )
 
-func (pub *SplashPublicKey) GetAddress(compressed bool) []byte {
+func (pub *PublicKey) GetAddress(compressed bool) []byte {
 	buf := pub.Bytes()
 	v := byte(0x0) // compression flag
 	z := byte(0x0) // mutlisig flag
@@ -16,7 +38,7 @@ func (pub *SplashPublicKey) GetAddress(compressed bool) []byte {
 	return append([]byte{v, z}, addrRaw[:20]...)
 }
 
-func (priv *SplashPrivateKey) GetAddress(compressed bool) []byte {
+func (priv *PrivateKey) GetAddress(compressed bool) []byte {
 	pub := priv.GetPublicKey()
 	return pub.GetAddress(compressed)
 }
