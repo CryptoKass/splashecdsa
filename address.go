@@ -22,10 +22,9 @@
 
 // Package splashecdsa is a wrapper for the built in ecdsa, for the Splash ledger that
 // adds:
-//
-// * public key reconstruction from the signature.
-// * Mild support for multi signature applications.
-// * Generic address generation.
+// [Public key reconstruction from the signature,
+// Mild support for multi signature applications,
+// Generic address generation]
 //
 // Example:
 // 	C := elliptic.P256()
