@@ -72,6 +72,10 @@ func VerifyMutliSig(sigs []SplashSignature, data []byte, addr []byte, C elliptic
 		pub := sig.ReconstructPublicKey(data, C)
 		partners[sig.O] = pub
 		if !pub.Verify(data, sig) {
+			// QUIRK := tampered data will produce a valid public key that solves the equation
+			// however will fail to match address. So this tests is mostly unnecessary, as invalid data
+			// will pass, however the problem will be resolves by checking the addresses are
+			// matching.
 			return false
 		}
 	}

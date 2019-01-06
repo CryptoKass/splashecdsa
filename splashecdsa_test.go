@@ -43,6 +43,12 @@ func TestSigningP256(t *testing.T) {
 		t.Error("incorrect data was verified")
 	}
 
+	badData := data[:]
+	badData[0] = 0x0
+	if pub.Verify(badData, sig) && !pub.Verify(data[:], sig) {
+		t.Error("incorrect data was verified")
+	}
+
 	// attempt verification with invalid signature
 	invalidSig := sig
 	invalidSig.R.Sub(invalidSig.R, big.NewInt(5))
@@ -162,6 +168,7 @@ func TestMultiSig(t *testing.T) {
 	//initial vairables
 	curve := elliptic.P256()
 	data := sha256.Sum256([]byte("test data"))
+	t.Logf("correct data: %#x", data)
 
 	// generate 2 test keys
 	key1, err := splashecdsa.GenerateMultiSigKey(curve, 0, 2)
@@ -202,7 +209,8 @@ func TestMultiSig(t *testing.T) {
 	}
 
 	// attempt verification with invalid data
-	data[0] = 1
+	data[31] = 0x0
+	t.Logf("bad     data: %#x", data[:])
 	if splashecdsa.VerifyMutliSig(sigs, data[:], addr, curve) {
 		t.Error("multi sign passed verifcation on incorrect data.")
 	}
