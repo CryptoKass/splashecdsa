@@ -116,3 +116,12 @@ func (pub *PublicKey) Verify(hash []byte, sig SplashSignature) bool {
 	ecPub := ecdsa.PublicKey(*pub)
 	return ecdsa.Verify(&ecPub, hash, sig.R, sig.S)
 }
+
+// Matches will check if public key matches an address
+func (pub *PublicKey) Matches(addr []byte) bool {
+	if IsMultiSigAddress(addr) {
+		return false
+	}
+	compression := IsAddressCompressed(addr)
+	return ecmath.CheckByteEq(pub.GetAddress(compression), addr)
+}

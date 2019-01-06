@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/CryptoKass/splashecdsa"
+	"github.com/CryptoKass/splashecdsa/ecmath"
 )
 
 func TestSigningP256(t *testing.T) {
@@ -56,7 +57,24 @@ func TestSigningP256(t *testing.T) {
 		t.Error("incorrect public key was able to verify the signature")
 	}
 
-	//tets were successful
+	//reconstruct tampered public key
+	key.X = nil
+	tamperedPub := key.GetPublicKey()
+	if tamperedPub.X == nil {
+		t.Error("unable to reconstruct tampered public key")
+	}
+
+	// attempt quick check with invalid public key
+	tamperedPub.Y = big.NewInt(54)
+	if tamperedPub.QuickCheck(elliptic.P256()) {
+		t.Error("invalid public key passed quick check")
+	}
+	tamperedPub.Curve = elliptic.P224()
+	if tamperedPub.QuickCheck(elliptic.P256()) {
+		t.Error("invalid public key passed quick check")
+	}
+
+	//test were successful
 
 }
 
@@ -183,6 +201,12 @@ func TestMultiSig(t *testing.T) {
 		t.Error("valid multi sig failed to verify")
 	}
 
+	// attempt verification with invalid data
+	data[0] = 1
+	if splashecdsa.VerifyMutliSig(sigs, data[:], addr, curve) {
+		t.Error("multi sign passed verifcation on incorrect data.")
+	}
+
 	//otherwise everything went well
 }
 
@@ -252,10 +276,22 @@ func TestAddresses(t *testing.T) {
 		t.Error("Address failed to pass IsAddressValid")
 	}
 
+	// check address matches
+	pub := key.GetPublicKey()
+	if !pub.Matches(addr) {
+		t.Error("public key doesnt match address")
+	}
+
 	//check compressed address
 	compAddr := key.GetAddress(true)
 	if !splashecdsa.IsAddressCompressed(compAddr) {
 		t.Error("compressed address failed to pass IsAddressCompressed")
+	}
+
+	// check address matches
+	comppub := key.GetPublicKey()
+	if !comppub.Matches(addr) {
+		t.Error("compressed public key doesnt match address")
 	}
 
 	//check invalid address
@@ -264,4 +300,23 @@ func TestAddresses(t *testing.T) {
 		t.Error("invalid address passed IsAddressValid")
 	}
 
+	// check address matches
+	if pub.Matches(invalidAddr) {
+		t.Error("public key matches invalid address")
+	}
+
+}
+
+func TestECMath(t *testing.T) {
+	if ecmath.CheckByteEq([]byte{0x0}, nil) {
+		t.Error("Byte Equivilancy check passed on nil value")
+	}
+
+	if ecmath.CheckByteEq([]byte{0x0}, []byte{0x0, 0x1}) {
+		t.Error("Byte Equivilency check passed on unequal pair")
+	}
+
+	if ecmath.CheckByteEq([]byte{0x0, 0x8}, []byte{0x0, 0x1}) {
+		t.Error("Byte Equivilency check passed on unequal pair")
+	}
 }
