@@ -64,8 +64,8 @@ func numDr(S *big.Int, R *big.Int, curve *elliptic.CurveParams) *big.Int {
 	return NumDR.Mod(NumDR, curve.N)
 }
 
-func getZ(msgHash []byte) *big.Int {
-	hash := sha256.Sum256(msgHash)
+func getZ(msg []byte) *big.Int {
+	hash := sha256.Sum256(msg)
 	return new(big.Int).SetBytes(hash[:32])
 }
 

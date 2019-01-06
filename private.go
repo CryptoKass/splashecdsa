@@ -49,11 +49,16 @@ func (priv *PrivateKey) Bytes() (d []byte) {
 }
 
 // SetBytes reconstructs the private key from D bytes
-func (priv *PrivateKey) SetBytes(d []byte) {
+func (priv *PrivateKey) SetBytes(d []byte) *PrivateKey {
 	bigD := new(big.Int)
 	bigD.SetBytes(d)
 	priv.D = bigD
 	priv.Curve = elliptic.P256()
+	if priv.PublicKey.X == nil {
+		priv.PublicKey.Curve = elliptic.P256()
+		priv.PublicKey.X, priv.PublicKey.Y = priv.PublicKey.Curve.ScalarBaseMult(priv.D.Bytes())
+	}
+	return priv
 }
 
 // GetPublicKey returns the associated PublicKey for this privatekey,

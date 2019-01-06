@@ -22,9 +22,14 @@
 
 // Package splashecdsa is a wrapper for the built in ecdsa, for the Splash ledger that
 // adds:
-// [Public key reconstruction from the signature,
-// Mild support for multi signature applications,
-// Generic address generation]
+//
+// - Public key reconstruction from the signature
+//
+// - Mild support for multi signature applications
+//
+// - Generic address generation
+//
+// This lib depends on github.com/CryptoKass/splashmerkle.
 //
 // Example:
 // 	C := elliptic.P256()
@@ -39,7 +44,6 @@
 // 	fmt.Printf("key X: %#x\nkey Y: %#x\n", pub.X, pub.Y)
 //
 // 	fmt.Println("reconstruction success:", pub.X.Cmp(key.X) == 0)
-//
 package splashecdsa
 
 import (

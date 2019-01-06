@@ -69,9 +69,24 @@ func (pub *PublicKey) CompressedBytes() (buf []byte) {
 	return
 }
 
+// SetCompressedBytes decodes and decompressed the buf then
+// stores the values in the pub X and Y
+func (pub *PublicKey) SetCompressedBytes(buf []byte) *PublicKey {
+	v := buf[0]
+	bigX := new(big.Int).SetBytes(buf[1:])
+	bigY, y1 := ecmath.GetY(bigX, elliptic.P256().Params())
+	if v == byte(0x1) {
+		bigY = y1
+	}
+	pub.X = bigX
+	pub.Y = bigY
+	pub.Curve = elliptic.P256()
+	return pub
+}
+
 // SetBytes decodes the buf and stores the values in the
 // pub X and Y
-func (pub *PublicKey) SetBytes(buf []byte) {
+func (pub *PublicKey) SetBytes(buf []byte) *PublicKey {
 	bigX := new(big.Int)
 	bigY := new(big.Int)
 	bigX.SetBytes(buf[:32])
@@ -80,7 +95,7 @@ func (pub *PublicKey) SetBytes(buf []byte) {
 	pub.X = bigX
 	pub.Y = bigY
 	pub.Curve = elliptic.P256()
-	return
+	return pub
 }
 
 // QuickCheck quickly checks that the public key is
@@ -92,7 +107,7 @@ func (pub *PublicKey) QuickCheck(curve elliptic.Curve) bool {
 	if !curve.IsOnCurve(pub.X, pub.Y) {
 		return false
 	}
-	return false
+	return true
 }
 
 // Verify verifies a SplashSignature of the hash belongs to this

@@ -60,6 +60,10 @@ func (multi *MultiSigKey) Sign(data []byte) (SplashSignature, error) {
 	return sig, err
 }
 
+func (multi *MultiSigKey) GetPublicKey() PublicKey {
+	return multi.PrivateKey.GetPublicKey()
+}
+
 // VerifyMutliSig verify mulitiple signstures to a single multi signature address
 func VerifyMutliSig(sigs []SplashSignature, data []byte, addr []byte, C elliptic.Curve) bool {
 	partners := make([]PublicKey, len(sigs))
