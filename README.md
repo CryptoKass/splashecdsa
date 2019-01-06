@@ -1,6 +1,12 @@
-...
+# Splash ECDSA - SplashLedger:
 
-temp readme: 
+[![GODOC](https://godoc.org/github.com/CryptoKass/splashecdsa?status.svg)](https://godoc.org/github.com/CryptoKass/splashecdsa)
+[![Coverage Status](https://coveralls.io/repos/github/CryptoKass/splashecdsa/badge.svg?branch=master)](https://coveralls.io/github/CryptoKass/splashecdsa?branch=master)
+[![Build Status](https://travis-ci.org/CryptoKass/splashecdsa.svg?branch=master)](https://travis-ci.org/CryptoKass/splashecdsa)
+
+*temp readme*
+
+---
 
 This is a wrapper for the built in ecdsa, for the Splash ledger that adds:
 - public key reconstruction from the signature.
