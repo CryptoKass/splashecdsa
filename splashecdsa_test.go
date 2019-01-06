@@ -246,4 +246,17 @@ func TestAddresses(t *testing.T) {
 	if !splashecdsa.IsAddressValid(addr) {
 		t.Error("Address failed to pass IsAddressValid")
 	}
+
+	//check compressed address
+	compAddr := key.GetAddress(true)
+	if !splashecdsa.IsAddressCompressed(compAddr) {
+		t.Error("compressed address failed to pass IsAddressCompressed")
+	}
+
+	//check invalid address
+	invalidAddr := make([]byte, 10)
+	if splashecdsa.IsAddressValid(invalidAddr) {
+		t.Error("invalid address passed IsAddressValid")
+	}
+
 }
